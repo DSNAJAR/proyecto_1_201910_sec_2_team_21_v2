@@ -22,34 +22,87 @@ import model.vo.VOViolationCode;
 import sun.reflect.generics.tree.VoidDescriptor;
 import view.MovingViolationsManagerView;
 
+/**
+ * Esta clase representa el controlador de los datos
+ */
 public class Controller {
+	
+	//---------------------------------------------------------------------------------------------------
+	// Constantes
+	// --------------------------------------------------------------------------------------------------
 
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Enero
+	 */
 	public static final String DATOS_ENERO = "./data/Moving_Violations_Issued_in_January_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Febrero
+	 */
 	public static final String DATOS_FEBRERO = "./data/Moving_Violations_Issued_in_February_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Marzo
+	 */
 	public static final String DATOS_MARZO = "./data/Moving_Violations_Issued_in_March_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Abril
+	 */
 	public static final String DATOS_ABRIL = "./data/Moving_Violations_Issued_in_April_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Mayo
+	 */
 	public static final String DATOS_MAYO = "./data/Moving_Violations_Issued_in_May_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Junio
+	 */
 	public static final String DATOS_JUNIO = "./data/Moving_Violations_Issued_in_June_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Julio
+	 */
 	public static final String DATOS_JULIO = "./data/Moving_Violations_Issued_in_July_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Agosto
+	 */
 	public static final String DATOS_AGOSTO = "./data/Moving_Violations_Issued_in_August_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Septiembre
+	 */
 	public static final String DATOS_SEPTIEMBRE = "./data/Moving_Violations_Issued_in_September_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Octubre
+	 */
 	public static final String DATOS_OCTUBRE = "./data/Moving_Violations_Issued_in_Octomber_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Noviembre
+	 */
 	public static final String DATOS_NOVIEMBRE = "./data/Moving_Violations_Issued_in_November_2018.csv";
 	
+	/**
+	 * Constante que representa los datos de las infracciones realizadas en Diciembre
+	 */
 	public static final String DATOS_DICIEMBRE = "./data/Moving_Violations_Issued_in_December_2018.csv";
 	
+	//--------------------------------------------------------------------------------------------------
+	// Atributos
+	//--------------------------------------------------------------------------------------------------
+	
+	/**
+	 * Es el formato que se usara para las fechas
+	 */
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
+	/**
+	 * Es la referencia al view
+	 */
 	private MovingViolationsManagerView view;
 	
 	/**
@@ -66,7 +119,17 @@ public class Controller {
 	 * Cautrimestre del cual se subiran los datos - 1(Enero - Abril), 2(Mayo - Agosto) o 3(Septiembre - Diciembre)
 	 */
 	public int cuatrimestre;
-
+	
+	//-----------------------------------------------------------------------------------------------
+	// Constructor
+	// ----------------------------------------------------------------------------------------------
+	
+	/**
+	 * Construye un nuevo controlador con una pila y una cola.
+	 * <b>post:</b> se construyo  un nuevo controlador con una cola y una pila
+	 * La pila esta vacía <br>
+	 * La cola esta vacía <br> 
+	 */
 	public Controller() {
 		view = new MovingViolationsManagerView();
 		
@@ -255,82 +318,87 @@ public class Controller {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Compara si dos objetos tienen el mismo ObjectId
+	 * @return null
 	 */
 	public IQueue <VOMovingViolations> getSameObjectId () {
 		return null;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Busca las infracciones dentro del rango de fecha inicial y final establecido.
+	 * @param pFecha1 Fecha inicial para establecer la busqueda.
+	 * @param pFecha2 Fecha final paara terminar la busqueda.
+	 * @return null
 	 */
 	public IQueue <VOMovingViolations> searchMovingViolations (String pFecha1, String pFecha2) {
 		return null;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Busca la infraccion con el codigo recibido y retorna el FINEAMT promedio de esta
+	 * @param pViolationCode Codigo de la infracción a buscar. pViolationCode != null && pViolationCode != ""
+	 * @return 0
 	 */
 	public int getFINEAMTPromedio (String pViolationCode) {
 		return 0;
 	}
 	
 	/**
-	 * 
-	 * @param pAddressId
-	 * @return
+	 * Busca las infracciones que se cometieron en una dirección, dentro de un rango de fechas y las retorna en una pila.
+	 * @param pAddressId Dirección en la que se desea hacer realizar la busqueda.
+	 * @param pFecha1 Fecha inicial en la que se desea realizar la busqueda. pFecha1 != null && pFecha2 != ""
+	 * @param pFecha2 Fecha final en la que se desea realizar la busqueda. pFecha2 != null && pFecha2 != ""
+	 * @return null
 	 */
 	public IStack <VOMovingViolations> searchMVAddress (String pAddressId, String pFecha1, String pFecha2) {
 		return null;
 	}
 	
 	/**
-	 * 
-	 * @param minFINEAMT
-	 * @param maxFINEAMT
-	 * @return
+	 * Busca las infracciones que se encuentran dentro del rango de FINEAMT y las agrega a la cola.
+	 * @param minFINEAMT FINEAMT minimo para agregar la infracción en la cola. minFINEAMT > 0
+	 * @param maxFINEAMT FINEAMT maximo para agregar la infracción en la cola. maxFINEAMT > minFINEAMT
+	 * @return null
 	 */
 	public IQueue <VOViolationCode> getViolationsCode (int minFINEAMT, int maxFINEAMT) {
 		return null;
 	}
 	
 	/**
-	 * 
-	 * @param minTotalPaid
-	 * @param maxTotalPaid
-	 * @return
+	 * Busca las infracciones por el total pagado, dentro de un rango de pago.
+	 * @param minTotalPaid Cantidad minima del TOTALPAID para agregar la infraccion en la pila. minTotalPaid > 0
+	 * @param maxTotalPaid Cantidad máxima del TOTALPAID para agregar la infracción en la pila. maxTotalPaid > minTotalPaid
+	 * @return null
 	 */
 	public IStack <VOMovingViolations> getMVByTotalPaid (int minTotalPaid, int maxTotalPaid) {
 		return null;
 	}
 	
 	/**
-	 * 
-	 * @param horaInicial
-	 * @param horaFinal
-	 * @return
+	 * Busca las infracciones realizadas en un rango de hora final e inicial y las agrega en una cola.
+	 * @param horaInicial Hora inicial del rango. horaInicial >= 0
+	 * @param horaFinal Hora final del rango. horaFinal > horaInicial && horaInicial <= 24
+	 * @return null
 	 */
 	public IQueue <VOMovingViolations> getMVBySpecificHour (String horaInicial, String horaFinal) {
 		return null;
 	}
 	
 	/**
-	 * 
-	 * @param pViolationCode
-	 * @return
+	 * Busca una infracción por su codigo y retorna su FINEAMT promedio con la desviación estandar de este.
+	 * @param pViolationCode Codigo de la infracción a buscar. pViolationCode != null && pViolationCode != ""
+	 * @return 0
 	 */
 	public int getFINEAMTPromNdesviation (String pViolationCode) {
 		return 0;
 	}
 	
 	/**
-	 * 
-	 * @param pHora1
-	 * @param pHora2
-	 * @return
+	 * Retorna el numero de infracciones cometidas dentro de un rango de horas.
+	 * @param pHora1 Hora en la que se inicia la búsqueda. pHora1 >= 0
+	 * @param pHora2 Hora en la que se termina la búsqueda. pHora2 > pHora1 && pHora2 <= 24
+	 * @return 0
 	 */
 	public int getNInfraccionesAtDay (int pHora1, int pHora2) {
 		return 0;
