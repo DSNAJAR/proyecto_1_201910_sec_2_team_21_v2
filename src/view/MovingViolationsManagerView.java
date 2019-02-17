@@ -13,13 +13,23 @@ public class MovingViolationsManagerView
 	
 	public void printMenu() {
 		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
-		System.out.println("---------------------Taller 3----------------------");
-		System.out.println("1. Cree una nueva coleccion de infracciones en movimiento");
+		System.out.println("---------------------Proyecto 1--------------------");
+		System.out.println("--------------David Ruiz & David Najar-------------");
+		System.out.println("1. Cree una nueva coleccion de infracciones en movimiento, a partir de un cuatrimestre");
 		System.out.println("2. Dar estadisticas diarias de las infracciones");
 		System.out.println("3. Dar ultimos n infracciones que terminaron en accidente");
 		System.out.println("4. Salir");
 		System.out.println("Digite el n�mero de opci�n para ejecutar la tarea, luego presione enter: (Ej., 1):");
 		
+	}
+	
+	public void printMenu2() {
+		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
+		System.out.println("---------------------Proyecto 1--------------------");
+		System.out.println("--------------David Ruiz & David Najar-------------");
+		System.out.println("1. Enero - Abril");
+		System.out.println("Mayo - Agosto");
+		System.out.println("Septiembre - Diciembre");
 	}
 	
 	public void printDailyStatistics(IQueue<VODaylyStatistic> dailyStatistics) {

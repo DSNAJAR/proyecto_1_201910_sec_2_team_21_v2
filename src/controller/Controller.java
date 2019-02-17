@@ -18,6 +18,7 @@ import model.data_structures.Queue;
 import model.data_structures.Stack;
 import model.vo.VODaylyStatistic;
 import model.vo.VOMovingViolations;
+import model.vo.VOViolationCode;
 import sun.reflect.generics.tree.VoidDescriptor;
 import view.MovingViolationsManagerView;
 
@@ -26,6 +27,26 @@ public class Controller {
 	public static final String DATOS_ENERO = "./data/Moving_Violations_Issued_in_January_2018.csv";
 	
 	public static final String DATOS_FEBRERO = "./data/Moving_Violations_Issued_in_February_2018.csv";
+	
+	public static final String DATOS_MARZO = "./data/Moving_Violations_Issued_in_March_2018.csv";
+	
+	public static final String DATOS_ABRIL = "./data/Moving_Violations_Issued_in_April_2018.csv";
+	
+	public static final String DATOS_MAYO = "./data/Moving_Violations_Issued_in_May_2018.csv";
+	
+	public static final String DATOS_JUNIO = "./data/Moving_Violations_Issued_in_June_2018.csv";
+	
+	public static final String DATOS_JULIO = "./data/Moving_Violations_Issued_in_July_2018.csv";
+	
+	public static final String DATOS_AGOSTO = "./data/Moving_Violations_Issued_in_August_2018.csv";
+	
+	public static final String DATOS_SEPTIEMBRE = "./data/Moving_Violations_Issued_in_September_2018.csv";
+	
+	public static final String DATOS_OCTUBRE = "./data/Moving_Violations_Issued_in_Octomber_2018.csv";
+	
+	public static final String DATOS_NOVIEMBRE = "./data/Moving_Violations_Issued_in_November_2018.csv";
+	
+	public static final String DATOS_DICIEMBRE = "./data/Moving_Violations_Issued_in_December_2018.csv";
 	
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
@@ -37,17 +58,15 @@ public class Controller {
 	private Queue<VOMovingViolations> movingViolationsQueue;
 	
 	/**
-	 * Pila donde se van a cargar los datos de los archivos
+	 * Cautrimestre del cual se subiran los datos - 1(Enero - Abril), 2(Mayo - Agosto) o 3(Septiembre - Diciembre)
 	 */
-	private Stack<VOMovingViolations> movingViolationsStack;
-
+	public int cuatrimestre;
 
 	public Controller() {
 		view = new MovingViolationsManagerView();
 		
 		//TODO, inicializar la pila y la cola
 		movingViolationsQueue = null;
-		movingViolationsStack = null;
 	}
 	
 	public void run() throws Exception {
@@ -63,7 +82,23 @@ public class Controller {
 			switch(option)
 			{
 				case 1:
-					this.loadMovingViolations();
+					view.printMensage("Ingrese el número del cuatrimestre a cargar");
+					view.printMenu2();
+					cuatrimestre = sc.nextInt();
+					switch(cuatrimestre) {
+					case 1:
+						this.loadMovingViolations(1);
+						view.printMensage("Se cargo la información de los meses Enero - Abril");
+						break;
+					case 2:
+						this.loadMovingViolations(2);
+						view.printMensage("Se cargo la información de los meses mayo - Agosto");
+						break;
+					case 3:
+						this.loadMovingViolations(3);
+						view.printMensage("Se cargo la información de los meses Septiembre - Diciembre");
+						break;
+					}
 					break;
 					
 				case 2:
@@ -79,7 +114,7 @@ public class Controller {
 					view.printMovingViolations(violations);
 					break;
 											
-				case 4:	
+				case :	
 					fin=true;
 					sc.close();
 					break;
@@ -89,24 +124,85 @@ public class Controller {
 
 	
 
-	public void loadMovingViolations() throws Exception{
+	public void loadMovingViolations(int pCuatrimestre) throws Exception{
 		// TODO
 		movingViolationsQueue = new Queue<VOMovingViolations>();
-		movingViolationsStack = new Stack<VOMovingViolations>();
-		String mes = null;
+		int nCuatrimestre = pCuatrimestre;
+		boolean cargaCompleta = false;
 		int i = 0;
+		String mes = null;
 		
-		while(i != 2)
+		while(cargaCompleta)
 		{
-			if(i == 0)
+			if(nCuatrimestre == 1)
 			{
-				mes = DATOS_ENERO;
-				i++;
+				if(i == 0)
+				{
+					mes = DATOS_ENERO;
+					i++;
+				}
+				if(i == 1)
+				{
+					mes = DATOS_FEBRERO;
+					i++;
+				}
+				if(i == 2)
+				{
+					mes = DATOS_MARZO;
+					i++;
+				}
+				if(i == 3)
+				{
+					mes = DATOS_ABRIL;
+					i = 0;
+				}
 			}
-			else
+			if(nCuatrimestre == 2)
 			{
-				mes = DATOS_FEBRERO;
-				i++;
+				if(i == 0)
+				{
+					mes = DATOS_MAYO;
+					i++;
+				}
+				if(i == 1)
+				{
+					mes = DATOS_JUNIO;
+					i++;
+				}
+				if(i == 2)
+				{
+					mes = DATOS_JULIO;
+					i++;
+				}
+				if(i == 3)
+				{
+					mes = DATOS_AGOSTO;
+					i = 0;
+				}
+			}
+			if(nCuatrimestre == 3)
+			{
+				if(i == 0)
+				{
+					mes = DATOS_SEPTIEMBRE;
+					i++;
+				}
+				if(i == 1)
+				{
+					mes = DATOS_OCTUBRE;
+					i++;
+				}
+				if(i == 2)
+				{
+					mes = DATOS_NOVIEMBRE;
+					i++;
+				}
+				if(i == 3)
+				{
+					mes = DATOS_DICIEMBRE;
+					i = 0;
+					cargaCompleta = true;
+				}
 			}
 			
 			File flMovingViolations = new File(mes);
@@ -138,14 +234,7 @@ public class Controller {
 				String violationDescription = mv[15].trim();
 				String rowId = mv[16].trim();
 				
-				if(i == 1)
-				{
-					movingViolationsQueue.enqueue(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
-				}
-				else
-				{
-					movingViolationsStack.push(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
-				}
+				movingViolationsQueue.enqueue(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
 			}
 			if(i!=1)
 			{
@@ -155,63 +244,75 @@ public class Controller {
 		}
 	}
 	
-	public IQueue <VODaylyStatistic> getDailyStatistics () throws ParseException {
-		// TODO
-		Queue<VODaylyStatistic> statistics = new Queue<VODaylyStatistic>();
-		Queue<VOMovingViolations> base = movingViolationsQueue;
-		
-		Iterator<VOMovingViolations> it = base.iterator();
-		
-		String fecha = null;
-		int nAccidentes = 0;
-		int nInfracciones = 0;
-		int suma = 0;
-
-		VOMovingViolations indicador = it.next();
-
-		while(it.hasNext()) {
-			VOMovingViolations movingViolation = it.next();
-			fecha = indicador.getDate();
-			String fechaCurrent = movingViolation.getDate();
-			Date fechaFormat = format.parse(fecha);
-			Date fechaCurrentFormat = format.parse(fechaCurrent);
-			
-			if(fechaFormat.compareTo(fechaCurrentFormat) == 0) {
-				nInfracciones++;
-				suma += movingViolation.getSumaFINEAMT();
-				if(movingViolation.getAccidentIndicator().equals("Yes")) {
-					nAccidentes++;
-				}
-				
-			}
-			else {
-				statistics.enqueue(new VODaylyStatistic(fecha, nAccidentes, nInfracciones, suma));
-				fecha = movingViolation.getDate();
-				nAccidentes = 0;
-				nInfracciones = 0;
-				suma = 0;
-			}
-		}
-		
-		return statistics;
+	/**
+	 * 
+	 * @return
+	 */
+	public IQueue <VOMovingViolations> getSameObjectId () {
+		return null;
 	}
 	
-	public IStack <VOMovingViolations> nLastAccidents(int n) {
-		// TODO
-		Stack<VOMovingViolations> nAccidents = new Stack<VOMovingViolations>();
-		Stack<VOMovingViolations> base = new Stack<VOMovingViolations>();
-		int i = 0;
-		Iterator<VOMovingViolations> it = base.iterator();
-		
-		while(i != n)
-		{
-			VOMovingViolations movingViolation = it.next();
-			if(movingViolation.getAccidentIndicator().equals("Yes"))
-			{
-				nAccidents.push(movingViolation);
-				i++;
-			}
-		}
-		return nAccidents;
+	/**
+	 * 
+	 * @return
+	 */
+	public IQueue <VOMovingViolations> searchMovingViolations () {
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getFINEAMTPromedio (String pViolationCode) {
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param pAddressId
+	 * @return
+	 */
+	public IStack <VOMovingViolations> searchMVAddress (String pAddressId) {
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param minFINEAMT
+	 * @param maxFINEAMT
+	 * @return
+	 */
+	public IQueue <VOViolationCode> getViolationsCode (int minFINEAMT, int maxFINEAMT) {
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param minTotalPaid
+	 * @param maxTotalPaid
+	 * @return
+	 */
+	public IStack <VOMovingViolations> getMVByTotalPaid (int minTotalPaid, int maxTotalPaid) {
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param horaInicial
+	 * @param horaFinal
+	 * @return
+	 */
+	public IQueue <VOMovingViolations> getMVBySpecificHour (String horaInicial, String horaFinal) {
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param pViolationCode
+	 * @return
+	 */
+	public int getFINEAMTPromNdesviation (String pViolationCode) {
+		return 0;
 	}
 }
