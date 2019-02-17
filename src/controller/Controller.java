@@ -58,6 +58,11 @@ public class Controller {
 	private Queue<VOMovingViolations> movingViolationsQueue;
 	
 	/**
+	 * Pila donde se van a cargar los datos de los archivos
+	 */
+	private Stack<VOMovingViolations> movingViolationsStack;
+	
+	/**
 	 * Cautrimestre del cual se subiran los datos - 1(Enero - Abril), 2(Mayo - Agosto) o 3(Septiembre - Diciembre)
 	 */
 	public int cuatrimestre;
@@ -67,6 +72,7 @@ public class Controller {
 		
 		//TODO, inicializar la pila y la cola
 		movingViolationsQueue = null;
+		movingViolationsStack = null;
 	}
 	
 	public void run() throws Exception {
@@ -102,7 +108,8 @@ public class Controller {
 					break;
 					
 				case 2:
-					IQueue<VODaylyStatistic> dailyStatistics = this.getDailyStatistics();
+					IQueue<VOMovingViolations> sameObjectID = this.getSameObjectId();
+					view.prin
 					view.printDailyStatistics(dailyStatistics);
 					break;
 					
@@ -155,6 +162,7 @@ public class Controller {
 				{
 					mes = DATOS_ABRIL;
 					i = 0;
+					cargaCompleta = true;
 				}
 			}
 			if(nCuatrimestre == 2)
@@ -178,6 +186,7 @@ public class Controller {
 				{
 					mes = DATOS_AGOSTO;
 					i = 0;
+					cargaCompleta = true;
 				}
 			}
 			if(nCuatrimestre == 3)
@@ -235,8 +244,9 @@ public class Controller {
 				String rowId = mv[16].trim();
 				
 				movingViolationsQueue.enqueue(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
+				movingViolationsStack.push(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
 			}
-			if(i!=1)
+			if(cargaCompleta == true)
 			{
 				lector.close();
 				fr.close();	
@@ -256,7 +266,7 @@ public class Controller {
 	 * 
 	 * @return
 	 */
-	public IQueue <VOMovingViolations> searchMovingViolations () {
+	public IQueue <VOMovingViolations> searchMovingViolations (String pFecha1, String pFecha2) {
 		return null;
 	}
 	
@@ -273,7 +283,7 @@ public class Controller {
 	 * @param pAddressId
 	 * @return
 	 */
-	public IStack <VOMovingViolations> searchMVAddress (String pAddressId) {
+	public IStack <VOMovingViolations> searchMVAddress (String pAddressId, String pFecha1, String pFecha2) {
 		return null;
 	}
 	
@@ -313,6 +323,16 @@ public class Controller {
 	 * @return
 	 */
 	public int getFINEAMTPromNdesviation (String pViolationCode) {
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param pHora1
+	 * @param pHora2
+	 * @return
+	 */
+	public int getNInfraccionesAtDay (int pHora1, int pHora2) {
 		return 0;
 	}
 }
