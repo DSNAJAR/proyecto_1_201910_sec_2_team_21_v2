@@ -11,6 +11,9 @@ public class MovingViolationsManagerView
 		
 	}
 	
+	/**
+	 * Imprime el menu al iniciar el programa con las diferentes opciones a escoger.
+	 */
 	public void printMenu() {
 		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
 		System.out.println("---------------------Proyecto 1--------------------");
@@ -33,6 +36,9 @@ public class MovingViolationsManagerView
 		
 	}
 	
+	/**
+	 * Imprime el menu con las opciones de cuatrimestre a cargar para que el programa corra.
+	 */
 	public void printMenu2() {
 		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
 		System.out.println("---------------------Proyecto 1--------------------");
@@ -42,26 +48,10 @@ public class MovingViolationsManagerView
 		System.out.println("Septiembre - Diciembre");
 	}
 	
-	public void printDailyStatistics(IQueue<VODaylyStatistic> dailyStatistics) {
-		System.out.println("Se encontraron "+ dailyStatistics.size() + " elementos");
-		for (VODaylyStatistic dayStatistic : dailyStatistics) 
-		{
-			//TODO
-			System.out.println("2018-01-01 - accidentes:	100,	infracciones:	200,	multas totales:	$10,000  " );;
-		}
-	}
-	
-	public void printMovingViolations(IStack<VOMovingViolations> violations) {
-		System.out.println("Se encontraron "+ violations.size() + " elementos");
-		for (VOMovingViolations violation : violations) 
-		{
-			System.out.println(violation.objectId() + " " 
-								+ violation.getTicketIssueDate() + " " 
-								+ violation.getLocation()+ " " 
-								+ violation.getViolationDescription());
-		}
-	}
-	
+	/**
+	 * Imprime un mensaje
+	 * @param mensaje Mensaje a imprimir. mensaje != null && mensaje != ""
+	 */
 	public void printMensage(String mensaje) {
 		System.out.println(mensaje);
 	}
