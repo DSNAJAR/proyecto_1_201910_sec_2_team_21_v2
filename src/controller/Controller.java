@@ -415,4 +415,20 @@ public class Controller {
 	public int getNInfraccionesAtDay (int pHora1, int pHora2) {
 		return 0;
 	}
+	
+	/**
+	 * 
+	 * @param args
+	 */
+	public void getGraficaASCII (String[] args) {
+		
+	}
+	
+	public double getDeudaTotal (String pFecha1, String pFecha2) {
+		return 0.0;
+	}
+	
+	public void geGraficaASCIIdeudaAcumuladaTotal () {
+		
+	}
 }
