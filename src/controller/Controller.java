@@ -121,7 +121,7 @@ public class Controller {
 	public int cuatrimestre;
 	
 	//-----------------------------------------------------------------------------------------------
-	// Constructor
+	// Constructores
 	// ----------------------------------------------------------------------------------------------
 	
 	/**
@@ -138,6 +138,10 @@ public class Controller {
 		movingViolationsStack = null;
 	}
 	
+	/**
+	 * Lee la opcion que el usuario escoja para el desarrollo del programa
+	 * @throws Exception 
+	 */
 	public void run() throws Exception {
 		Scanner sc = new Scanner(System.in);
 		boolean fin = false;
@@ -193,7 +197,11 @@ public class Controller {
 	}
 
 	
-
+	/**
+	 * Carga los datos segun el cuatrimestre escogido por el usuario
+	 * @param pCuatrimestre Numero de cuatrimestre escogido por el usuario. pCuatrimestre = 1 | pCuatrimestre = 2 | pCuatrimestre = 3
+	 * @throws Exception si no pudo cargar los datos.
+	 */
 	public void loadMovingViolations(int pCuatrimestre) throws Exception{
 		// TODO
 		movingViolationsQueue = new Queue<VOMovingViolations>();
@@ -317,8 +325,12 @@ public class Controller {
 		}
 	}
 	
+	//------------------------------------------------------------------------------------------
+	// Métodos
+	//------------------------------------------------------------------------------------------
+	
 	/**
-	 * Compara si dos objetos tienen el mismo ObjectId
+	 * Compara si existen objetos que tienen el mismo ObjectId
 	 * @return null
 	 */
 	public IQueue <VOMovingViolations> getSameObjectId () {
