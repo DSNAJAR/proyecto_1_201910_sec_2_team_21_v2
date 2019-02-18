@@ -4,24 +4,50 @@ import java.util.Iterator;
 
 public class Queue<T extends Comparable<T>> implements IQueue<T> {
 
+	//--------------------------------------------------------------------------------------
+	// Atributos
+	//--------------------------------------------------------------------------------------
+	
+	/**
+	 * Primer elemento de la cola
+	 */
 	private Nodo<T> first;
 	
+	/**
+	 * Último elemento de la cola
+	 */
 	private Nodo<T> last;
 	
+	/**
+	 * Tamaño de la cola
+	 */
 	private int size;
 	
+	//--------------------------------------------------------------------------------------
+	// Constructor
+	//--------------------------------------------------------------------------------------
+	
+	/**
+	 * Crea una nueva cola vacía
+	 */
 	public Queue() {
 		first = null;
 		last = null;
 		size = 0;
 	}
 	
+	//--------------------------------------------------------------------------------------
+	// Métodos
+	//--------------------------------------------------------------------------------------
 	@Override
 	public Iterator<T> iterator() {
 		// TODO Auto-generated method stub
 		return new ListIterator();
 	}
 	
+	/**
+	 * Clase que representa el iterador para la cola
+	 */
 	private class ListIterator implements Iterator<T> {
 		
 		private Nodo<T> current = first;

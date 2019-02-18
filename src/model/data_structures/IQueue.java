@@ -1,5 +1,8 @@
 package model.data_structures;
 
+/**
+ * Esta clase representa una Cola
+ */
 public interface IQueue<T> extends Iterable<T>{
 
 	/**

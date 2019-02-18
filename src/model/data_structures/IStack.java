@@ -1,5 +1,8 @@
 package model.data_structures;
 
+/**
+ * Esta clase representa una Pila.
+ */
 public interface IStack<T> extends Iterable<T>{
 	
 	/**
