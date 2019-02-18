@@ -2,7 +2,6 @@ package view;
 
 import model.data_structures.IQueue;
 import model.data_structures.IStack;
-import model.vo.VODaylyStatistic;
 import model.vo.VOMovingViolations;
 
 public class MovingViolationsManagerView 
