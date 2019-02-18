@@ -438,17 +438,27 @@ public class Controller {
 	}
 	
 	/**
-	 * 
+	 * Genera una grafica ASCII con los porcentajes correspondientes a las infracciones que tuvieron accidentes
+	 * dentro del rango de horas del dia. El rango se define por valores enteros en [0, 24]
 	 * @param args
 	 */
-	public void getGraficaASCII (String[] args) {
+	public void getGraficaPorcentaje (String[] args) {
 		
 	}
 	
+	/**
+	 * Calcula la deuda total por infracciones que se dieron en un rango de fechas
+	 * @param pFecha1 Fecha desde la cual se quiere realizar la busqueda
+	 * @param pFecha2 Fecha en la cual se termina la busqueda
+	 * @return 
+	 */
 	public double getDeudaTotal (String pFecha1, String pFecha2) {
 		return 0.0;
 	}
 	
+	/**
+	 * Genera una grafica ASCII con la deuda acumulada por infracciones en el cuatrimestre
+	 */
 	public void geGraficaASCIIdeudaAcumuladaTotal () {
 		
 	}
