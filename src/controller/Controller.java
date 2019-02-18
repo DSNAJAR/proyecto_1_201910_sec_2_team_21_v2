@@ -16,7 +16,6 @@ import model.data_structures.IStack;
 import model.data_structures.Nodo;
 import model.data_structures.Queue;
 import model.data_structures.Stack;
-import model.vo.VODaylyStatistic;
 import model.vo.VOMovingViolations;
 import model.vo.VOViolationCode;
 import sun.reflect.generics.tree.VoidDescriptor;
@@ -175,20 +174,42 @@ public class Controller {
 					break;
 					
 				case 2:
-					IQueue<VOMovingViolations> sameObjectID = this.getSameObjectId();
-					view.prin
-					view.printDailyStatistics(dailyStatistics);
 					break;
 					
 				case 3:
-					view.printMensage("Ingrese el número de infracciones a buscar");
-					int n = sc.nextInt();
-
-					IStack<VOMovingViolations> violations = this.nLastAccidents(n);
-					view.printMovingViolations(violations);
 					break;
-											
-				case :	
+						
+				case 4:
+					break;
+				
+				case 5:
+					break;
+					
+				case 6:
+					break;
+					
+				case 7:
+					break;
+					
+				case 8:
+					break;
+					
+				case 9:
+					break;
+					
+				case 10:
+					break;
+					
+				case 11:
+					break;
+					
+				case 12:
+					break;
+					
+				case 13:
+					break;
+					
+				case 14:	
 					fin=true;
 					sc.close();
 					break;
