@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
@@ -143,9 +145,10 @@ public class Controller {
 	 */
 	public void run() throws Exception {
 		Scanner sc = new Scanner(System.in);
-		boolean fin = false;
+		boolean fin=false;
+		Controller controller = new Controller();
 		
-		while(fin == false)
+		while(!fin)
 		{
 			view.printMenu();
 			
@@ -153,68 +156,147 @@ public class Controller {
 			
 			switch(option)
 			{
+				case 0:
+					view.printMessage("Ingrese el cuatrimestre (1, 2 o 3)");
+					int numeroCuatrimestre = sc.nextInt();
+					controller.loadMovingViolations(numeroCuatrimestre);
+					break;
+				
 				case 1:
-					view.printMensage("Ingrese el número del cuatrimestre a cargar");
-					view.printMenu2();
-					cuatrimestre = sc.nextInt();
-					switch(cuatrimestre) {
-					case 1:
-						this.loadMovingViolations(1);
-						view.printMensage("Se cargo la información de los meses Enero - Abril");
-						break;
-					case 2:
-						this.loadMovingViolations(2);
-						view.printMensage("Se cargo la información de los meses mayo - Agosto");
-						break;
-					case 3:
-						this.loadMovingViolations(3);
-						view.printMensage("Se cargo la información de los meses Septiembre - Diciembre");
-						break;
-					}
+					boolean isUnique = controller.verifyObjectIDIsUnique();
+					view.printMessage("El objectId es Ãºnico: " + isUnique);
 					break;
 					
 				case 2:
+					
+					view.printMessage("Ingrese la fecha con hora inicial (Ej : 28/03/2017T15:30:20)");
+					LocalDateTime fechaInicialReq2A = convertirFecha_Hora_LDT(sc.next());
+					
+					view.printMessage("Ingrese la fecha con hora final (Ej : 28/03/2017T15:30:20)");
+					LocalDateTime fechaFinalReq2A = convertirFecha_Hora_LDT(sc.next());
+					
+					IQueue<VOMovingViolations> resultados2 = controller.getMovingViolationsInRange(fechaInicialReq2A, fechaFinalReq2A);
+					
+					view.printMovingViolationsReq2(resultados2);
+					
 					break;
 					
 				case 3:
+					
+					view.printMessage("Ingrese el VIOLATIONCODE (Ej : T210)");
+					String violationCode3 = sc.next();
+					
+					double [] promedios3 = controller.avgFineAmountByViolationCode(violationCode3);
+					
+					view.printMessage("FINEAMT promedio sin accidente: " + promedios3[0] + ", con accidente:" + promedios3[1]);
 					break;
 						
+					
 				case 4:
-					break;
-				
-				case 5:
+					
+					view.printMessage("Ingrese el ADDRESS_ID");
+					String addressId4 = sc.next();
+
+					view.printMessage("Ingrese la fecha con hora inicial (Ej : 28/03/2017)");
+					LocalDate fechaInicialReq4A = convertirFecha(sc.next());
+					
+					view.printMessage("Ingrese la fecha con hora final (Ej : 28/03/2017)");
+					LocalDate fechaFinalReq4A = convertirFecha(sc.next());
+					
+					IStack<VOMovingViolations> resultados4 = controller.getMovingViolationsAtAddressInRange(addressId4, fechaInicialReq4A, fechaFinalReq4A);
+					
+					view.printMovingViolationsReq4(resultados4);
+					
 					break;
 					
+				case 5:
+					view.printMessage("Ingrese el limite inferior de FINEAMT  (Ej: 50)");
+					double limiteInf5 = sc.nextDouble();
+					
+					view.printMessage("Ingrese el limite superior de FINEAMT  (Ej: 50)");
+					double limiteSup5 = sc.nextDouble();
+					
+					IQueue<VOViolationCode> violationCodes = controller.violationCodesByFineAmt(limiteInf5, limiteSup5);
+					view.printViolationCodesReq5(violationCodes);
+					break;
+				
 				case 6:
+					
+					view.printMessage("Ingrese el limite inferior de TOTALPAID (Ej: 200)");
+					double limiteInf6 = sc.nextDouble();
+					
+					view.printMessage("Ingrese el limite superior de TOTALPAID (Ej: 200)");
+					double limiteSup6 = sc.nextDouble();
+					
+					view.printMessage("Ordenar Ascendentmente: (Ej: true)");
+					boolean ascendente6 = sc.nextBoolean();				
+					
+					IStack<VOMovingViolations> resultados6 = controller.getMovingViolationsByTotalPaid(limiteInf6, limiteSup6, ascendente6);
+					view.printMovingViolationReq6(resultados6);
 					break;
 					
 				case 7:
+					
+					view.printMessage("Ingrese la hora inicial (Ej: 23)");
+					int horaInicial7 = sc.nextInt();
+					
+					view.printMessage("Ingrese la hora final (Ej: 23)");
+					int horaFinal7 = sc.nextInt();
+					
+					IQueue<VOMovingViolations> resultados7 = controller.getMovingViolationsByHour(horaInicial7, horaFinal7);
+					view.printMovingViolationsReq7(resultados7);
 					break;
 					
 				case 8:
+					
+					view.printMessage("Ingrese el VIOLATIONCODE (Ej : T210)");
+					String violationCode8 = sc.next();
+					
+					double [] resultado8 = controller.avgAndStdDevFineAmtOfMovingViolation(violationCode8);
+					
+					view.printMessage("FINEAMT promedio: " + resultado8[0] + ", desviaciÃ³n estandar:" + resultado8[1]);
 					break;
 					
 				case 9:
-					break;
 					
+					view.printMessage("Ingrese la hora inicial (Ej: 23)");
+					int horaInicial9 = sc.nextInt();
+					
+					view.printMessage("Ingrese la hora final (Ej: 23)");
+					int horaFinal9 = sc.nextInt();
+					
+					int resultado9 = controller.countMovingViolationsInHourRange(horaInicial9, horaFinal9);
+					
+					view.printMessage("NÃºmero de infracciones: " + resultado9);
+					break;
+				
 				case 10:
+					view.printMovingViolationsByHourReq10();
 					break;
 					
 				case 11:
+					view.printMessage("Ingrese la fecha inicial (Ej : 28/03/2017)");
+					LocalDate fechaInicial11 = convertirFecha(sc.next());
+					
+					view.printMessage("Ingrese la fecha final (Ej : 28/03/2017)");
+					LocalDate fechaFinal11 = convertirFecha(sc.next());
+					
+					double resultados11 = controller.totalDebt(fechaInicial11, fechaFinal11);
+					view.printMessage("Deuda total "+ resultados11);
+					break;
+				
+				case 12:	
+					view.printTotalDebtbyMonthReq12();
+					
 					break;
 					
-				case 12:
-					break;
-					
-				case 13:
-					break;
-					
-				case 14:	
+				case 13:	
 					fin=true;
 					sc.close();
 					break;
 			}
 		}
+
 	}
 
 	
@@ -351,60 +433,65 @@ public class Controller {
 	//------------------------------------------------------------------------------------------
 	
 	/**
-	 * Compara si existen objetos que tienen el mismo ObjectId
-	 * @return null
+	 * Verifica si existen objetos que tienen el mismo ObjectId
+	 * @return True||false
 	 */
-	public IQueue <VOMovingViolations> getSameObjectId () {
-		return null;
+	public boolean verifyObjectIDIsUnique() {
+		return false;
 	}
 	
 	/**
 	 * Busca las infracciones dentro del rango de fecha inicial y final establecido.
 	 * @param pFecha1 Fecha inicial para establecer la busqueda.
 	 * @param pFecha2 Fecha final paara terminar la busqueda.
-	 * @return null
+	 * @return Cola de infracciones.
 	 */
-	public IQueue <VOMovingViolations> searchMovingViolations (String pFecha1, String pFecha2) {
+	public IQueue<VOMovingViolations> getMovingViolationsInRange(LocalDateTime fechaInicial, LocalDateTime fechaFinal) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	/**
-	 * Busca la infraccion con el codigo recibido y retorna el FINEAMT promedio de esta
-	 * @param pViolationCode Codigo de la infracción a buscar. pViolationCode != null && pViolationCode != ""
-	 * @return 0
+	 * Busca la infraccion con el codigo recibido y retorna el FINEAMT promedio cuando hubo y no hubo accidente.
+	 * @param violationCode Codigo de la infracción a buscar. pViolationCode != null && pViolationCode != "".
+	 * @return FINEAMTs promedio.
 	 */
-	public int getFINEAMTPromedio (String pViolationCode) {
-		return 0;
+	public double[] avgFineAmountByViolationCode(String violationCode) {
+		return new double [] {0.0 , 0.0};
 	}
 	
 	/**
 	 * Busca las infracciones que se cometieron en una dirección, dentro de un rango de fechas y las retorna en una pila.
-	 * @param pAddressId Dirección en la que se desea hacer realizar la busqueda.
-	 * @param pFecha1 Fecha inicial en la que se desea realizar la busqueda. pFecha1 != null && pFecha2 != ""
-	 * @param pFecha2 Fecha final en la que se desea realizar la busqueda. pFecha2 != null && pFecha2 != ""
-	 * @return null
+	 * @param addressId Dirección en la que se desea hacer realizar la busqueda.
+	 * @param fechaInicial Fecha inicial en la que se desea realizar la busqueda. pFecha1 != null && pFecha2 != ""
+	 * @param fechaFinal Fecha final en la que se desea realizar la busqueda. pFecha2 != null && pFecha2 != ""
+	 * @return Pila de infracciones.
 	 */
-	public IStack <VOMovingViolations> searchMVAddress (String pAddressId, String pFecha1, String pFecha2) {
+	public IStack<VOMovingViolations> getMovingViolationsAtAddressInRange(String addressId, LocalDate fechaInicial, LocalDate fechaFinal) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	/**
 	 * Busca las infracciones que se encuentran dentro del rango de FINEAMT y las agrega a la cola.
-	 * @param minFINEAMT FINEAMT minimo para agregar la infracción en la cola. minFINEAMT > 0
-	 * @param maxFINEAMT FINEAMT maximo para agregar la infracción en la cola. maxFINEAMT > minFINEAMT
-	 * @return null
+	 * @param limiteMin FINEAMT minimo para agregar la infracción en la cola. minFINEAMT > 0
+	 * @param limiteMax FINEAMT maximo para agregar la infracción en la cola. maxFINEAMT > minFINEAMT
+	 * @return Cola de infracciones.
 	 */
-	public IQueue <VOViolationCode> getViolationsCode (int minFINEAMT, int maxFINEAMT) {
+	public IQueue<VOViolationCode> violationCodesByFineAmt(double limiteMin, double limiteMax) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	/**
 	 * Busca las infracciones por el total pagado, dentro de un rango de pago.
-	 * @param minTotalPaid Cantidad minima del TOTALPAID para agregar la infraccion en la pila. minTotalPaid > 0
-	 * @param maxTotalPaid Cantidad máxima del TOTALPAID para agregar la infracción en la pila. maxTotalPaid > minTotalPaid
-	 * @return null
+	 * @param limiteMin Cantidad minima del TOTALPAID para agregar la infraccion en la pila. minTotalPaid > 0
+	 * @param limiteMax Cantidad máxima del TOTALPAID para agregar la infracción en la pila. maxTotalPaid > minTotalPaid
+	 * @param ascendente Indica si la pila se ordena ascendentemente o no.
+	 * @return Pila de infracciones.
 	 */
-	public IStack <VOMovingViolations> getMVByTotalPaid (int minTotalPaid, int maxTotalPaid) {
+	public IStack<VOMovingViolations> getMovingViolationsByTotalPaid(double limiteMin, double limiteMax, boolean ascendente) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -412,28 +499,31 @@ public class Controller {
 	 * Busca las infracciones realizadas en un rango de hora final e inicial y las agrega en una cola.
 	 * @param horaInicial Hora inicial del rango. horaInicial >= 0
 	 * @param horaFinal Hora final del rango. horaFinal > horaInicial && horaInicial <= 24
-	 * @return null
+	 * @return Cola de infracciones.
 	 */
-	public IQueue <VOMovingViolations> getMVBySpecificHour (String horaInicial, String horaFinal) {
+	public IQueue<VOMovingViolations> getMovingViolationsByHour(int horaInicial, int horaFinal) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	/**
-	 * Busca una infracción por su codigo y retorna su FINEAMT promedio con la desviación estandar de este.
-	 * @param pViolationCode Codigo de la infracción a buscar. pViolationCode != null && pViolationCode != ""
-	 * @return 0
+	 * Busca una infracción por su codigo y retorna su FINEAMT promedio y su desviación estandar de este.
+	 * @param violationCode Codigo de la infracción a buscar. pViolationCode != null && pViolationCode != ""
+	 * @return Arreglo con FINEAMTpromedio y la desviacion estandar.
 	 */
-	public int getFINEAMTPromNdesviation (String pViolationCode) {
-		return 0;
+	public double[] avgAndStdDevFineAmtOfMovingViolation(String violationCode) {
+		// TODO Auto-generated method stub
+		return new double [] {0.0 , 0.0};
 	}
 	
 	/**
 	 * Retorna el numero de infracciones cometidas dentro de un rango de horas.
-	 * @param pHora1 Hora en la que se inicia la búsqueda. pHora1 >= 0
-	 * @param pHora2 Hora en la que se termina la búsqueda. pHora2 > pHora1 && pHora2 <= 24
-	 * @return 0
+	 * @param hora1 Hora en la que se inicia la búsqueda. pHora1 >= 0
+	 * @param hora2 Hora en la que se termina la búsqueda. pHora2 > pHora1 && pHora2 <= 24
+	 * @return Número de infracciones.
 	 */
-	public int getNInfraccionesAtDay (int pHora1, int pHora2) {
+	public int countMovingViolationsInHourRange(int hora1, int hora2) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 	
@@ -448,12 +538,13 @@ public class Controller {
 	
 	/**
 	 * Calcula la deuda total por infracciones que se dieron en un rango de fechas
-	 * @param pFecha1 Fecha desde la cual se quiere realizar la busqueda
-	 * @param pFecha2 Fecha en la cual se termina la busqueda
-	 * @return 
+	 * @param fechaInicial Fecha desde la cual se quiere realizar la busqueda
+	 * @param fechaFinal Fecha en la cual se termina la busqueda
+	 * @return Deuda total.
 	 */
-	public double getDeudaTotal (String pFecha1, String pFecha2) {
-		return 0.0;
+	public double totalDebt(LocalDate fechaInicial, LocalDate fechaFinal) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	/**
@@ -461,5 +552,26 @@ public class Controller {
 	 */
 	public void geGraficaASCIIdeudaAcumuladaTotal () {
 		
+	}
+	
+	/**
+	 * Convertir fecha a un objeto LocalDate
+	 * @param fecha fecha en formato dd/mm/aaaa con dd para dia, mm para mes y aaaa para agno
+	 * @return objeto LD con fecha
+	 */
+	private static LocalDate convertirFecha(String fecha)
+	{
+		return LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
+
+	
+	/**
+	 * Convertir fecha y hora a un objeto LocalDateTime
+	 * @param fecha fecha en formato dd/mm/aaaaTHH:mm:ss con dd para dia, mm para mes y aaaa para agno, HH para hora, mm para minutos y ss para segundos
+	 * @return objeto LDT con fecha y hora integrados
+	 */
+	private static LocalDateTime convertirFecha_Hora_LDT(String fechaHora)
+	{
+		return LocalDateTime.parse(fechaHora, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm:ss"));
 	}
 }

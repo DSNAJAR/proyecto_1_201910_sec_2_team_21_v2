@@ -1,57 +1,131 @@
 package view;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+import controller.Controller;
 import model.data_structures.IQueue;
 import model.data_structures.IStack;
+import model.vo.VODaylyStatistic;
 import model.vo.VOMovingViolations;
+import model.vo.VOViolationCode;
 
 public class MovingViolationsManagerView 
 {
-	public MovingViolationsManagerView() {
-		
-	}
-	
 	/**
-	 * Imprime el menu al iniciar el programa con las diferentes opciones a escoger.
+	 * Constante con el nÃºmero maximo de datos maximo que se deben imprimir en consola
 	 */
+	public static final int N = 20;
+	
 	public void printMenu() {
 		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
-		System.out.println("---------------------Proyecto 1--------------------");
-		System.out.println("--------------David Ruiz & David Najar-------------");
-		System.out.println("1.  Cree una nueva coleccion de infracciones en movimiento, a partir de un cuatrimestre");
-		System.out.println("2.  Verificar que todas las infracciones poseen un unico id");
-		System.out.println("3.  Consultar infracciones ocurridas en cierto rango de fecha");
-		System.out.println("4.  Consultar FINEAMT promedio cuando hubo o no accidente");
-		System.out.println("5.  Consultar las infracciones en una dirección y en un rango de fecha");
-		System.out.println("6.  Consultar los tipos de de infracciones con su valor FINEAMT promedio en un rango");
-		System.out.println("7.  Consultar infracciones donde la cantidad pagada está en un rango dado");
-		System.out.println("8.  Consultar infracciones por hora inicial	y hora final");
-		System.out.println("9.  Consultar el FINEAMT promedio y su desviación estándar según el tipo de infracción");
-		System.out.println("10. Consultar el número de infracciones que ocurrieron en un rango de horas del día");
-		System.out.println("11. Ver grafica ASCII con el porcentaje de infracciones que tuvieron accidentes por hora del día");
-		System.out.println("12. La deuda total por infracciones que se dieron en un rango de fechas");
-		System.out.println("13. Grafica ASCII con la deuda acumulada total por infracciones");
-		System.out.println("14. Salir");
+		System.out.println("--------------------Proyecto 1---------------------");
+		System.out.println("----David Alejandro Ruiz & David Santiago Najar----");
+		System.out.println("0. Cargar datos del cuatrimestre");
+		System.out.println("1. Verificar que OBJECTID es en realidad un identificador único");
+		System.out.println("2. Consultar infracciones por fecha/hora inicial y fecha/hora final");
+		System.out.println("3. Dar FINEAMT promedio con y sin accidente por VIOLATIONCODE");
+		System.out.println("4. Consultar infracciones por direccion entre fecha inicial y fecha final");
+
+		
+		System.out.println("5. Consultar los tipos de infracciones (VIOLATIONCODE) con su valor (FINEAMT) promedio en un rango dado");
+		System.out.println("6. Consultar infracciones donde la cantidad pagada (TOTALPAID) esta en un rango dado. Se ordena por fecha de infracción");
+		System.out.println("7. Consultar infracciones por hora inicial y hora final, ordenada ascendentemente por VIOLATIONDESC");
+		System.out.println("8. Dado un tipo de infraccion (VIOLATIONCODE) informar el (FINEAMT) promedio y su desviacion estandar.");
+
+		System.out.println("9. El numero de infracciones que ocurrieron en un rango de horas del dia. Se define el rango de horas por valores enteros en el rango [0, 24]");
+		System.out.println("10. Grafica ASCII con el porcentaje de infracciones que tuvieron accidentes por hora del dia");
+		System.out.println("11. La deuda (TOTALPAID â€“ FINEAMT - PENALTY1 â€“ PENALTY2) total por infracciones que se dieron en un rango de fechas.");
+		System.out.println("12. Grafica ASCII con la deuda acumulada total por infracciones");
+
+		
+		System.out.println("13. Salir");
 		System.out.println("Digite el nï¿½mero de opciï¿½n para ejecutar la tarea, luego presione enter: (Ej., 1):");
 		
 	}
 	
-	/**
-	 * Imprime el menu con las opciones de cuatrimestre a cargar para que el programa corra.
-	 */
-	public void printMenu2() {
-		System.out.println("---------ISIS 1206 - Estructuras de datos----------");
-		System.out.println("---------------------Proyecto 1--------------------");
-		System.out.println("--------------David Ruiz & David Najar-------------");
-		System.out.println("1. Enero - Abril");
-		System.out.println("Mayo - Agosto");
-		System.out.println("Septiembre - Diciembre");
-	}
-	
-	/**
-	 * Imprime un mensaje
-	 * @param mensaje Mensaje a imprimir. mensaje != null && mensaje != ""
-	 */
-	public void printMensage(String mensaje) {
+	public void printMessage(String mensaje) {
 		System.out.println(mensaje);
 	}
+	
+	public void printMovingViolationsReq2(IQueue<VOMovingViolations> resultados2) {
+		for(VOMovingViolations v: resultados2) {
+			System.out.println("ObjectID: " + v.objectId() + ", issued: " + v.getTicketIssueDate());
+		}
+	}
+	
+	public void printMovingViolationsReq4(IStack<VOMovingViolations> resultados4) {
+		System.out.println("OBJECTID\t TICKETISSUEDAT\t STREETSEGID\t ADDRESS_ID");
+
+		for(VOMovingViolations v: resultados4) {
+			//System.out.println( v.objectId() + "\t" + v.getTicketIssueDate() + "\t" + v.getStreetSegId() + "\t" + v.getAddressId());
+		}
+	}
+	
+	public void printViolationCodesReq5(IQueue<VOViolationCode> violationCodes) {
+		System.out.println("VIOLATIONCODE\t FINEAMT promedio");
+
+		for(VOViolationCode v: violationCodes) {
+			//System.out.println(v.getViolationCode() + "\t" + v.getAvgFineAmt());
+		}
+	}
+	
+	public void printMovingViolationReq6(IStack<VOMovingViolations> resultados6) {
+		System.out.println("OBJECTID\t TICKETISSUEDAT\t TOTALPAID");
+		for(VOMovingViolations v: resultados6) {
+			System.out.println( v.objectId() + "\t" + v.getTicketIssueDate() + "\t" + v.getTotalPaid());
+		}
+	}
+	
+	public void printMovingViolationsReq7(IQueue<VOMovingViolations> resultados7) {
+		System.out.println("OBJECTID\t TICKETISSUEDAT\t VIOLATIONDESC");
+		for(VOMovingViolations v: resultados7) {
+			System.out.println( v.objectId() + "\t" + v.getTicketIssueDate() + "\t" + v.getViolationDescription());
+		}
+	}
+	
+	public void printMovingViolationsByHourReq10() {
+		System.out.println("Porcentaje de infracciones que tuvieron accidentes por hora. 2018");
+		System.out.println("Hora| % de accidentes");
+		System.out.println("00 | X");
+		System.out.println("01 | X");
+		System.out.println("02 | XX");
+		System.out.println("03 | XXXXX");
+		System.out.println("04 | XXXXXXXX");
+		System.out.println("05 | XXXXXXXXX");
+		System.out.println("06 | XXXXXXXXX");
+		System.out.println("07 | XXXXXXXXXX");
+		System.out.println("08 | XXXXXXXXXXX");
+		System.out.println("09 | XXXXXXXXXXXXX");
+		System.out.println("10 | XXXXXXXXXXXXXX");
+		System.out.println("11 | XXXXXXXXXXXXXX");
+		System.out.println("12 | XXXXXXXXXXXXXXXX");
+		System.out.println("13 | XXXX");
+		System.out.println("14 | XXXXXX");
+		System.out.println("15 | XXXXXXXXXXXXXXXX");
+		System.out.println("16 | XXXXXXXXXXX");
+		System.out.println("17 | XXXXXX");
+		System.out.println("18 | XXXXXXXXXXXXXXXX");
+		System.out.println("19 | XXXXXXXXXX");
+		System.out.println("20 | XXX");
+		System.out.println("21 | XXXXX");
+		System.out.println("22 | XXXX");
+		System.out.println("23 | XX");
+		System.out.println("");
+		System.out.println("Cada X representa Y%");
+	}
+	
+	public void printTotalDebtbyMonthReq12() {
+		System.out.println("Deuda acumulada por mes de infracciones. 2018");
+		System.out.println("Mes| Dinero");
+		System.out.println("01| X");
+		System.out.println("02| XX");
+		System.out.println("03 | XXXXXX");
+		System.out.println("04 | XXXXXXXXXX");
+		System.out.println("");
+		System.out.println("Cada X representa $YYYY USD");
+	}
+	
 }
