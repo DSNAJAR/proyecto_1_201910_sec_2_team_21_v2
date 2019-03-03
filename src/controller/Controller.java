@@ -527,7 +527,23 @@ public class Controller {
 	 */
 	public IStack<VOMovingViolations> getMovingViolationsAtAddressInRange(String addressId, LocalDate fechaInicial, LocalDate fechaFinal) {
 		// TODO Auto-generated method stub
-		return null;
+		IStack<VOMovingViolations> stack = new Stack<VOMovingViolations>();
+		Nodo<VOMovingViolations> x = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations item = null;
+		
+		while(x.siguiente!=null) {
+			item = x.item;
+			String sFecha = item.getTicketIssueDate();
+			String[] string = sFecha.split("\\'");
+			LocalDate fecha = convertirFecha(string[0]);
+			if(item.getAdressId() == Integer.parseInt(addressId)) {
+				if(fechaInicial.isBefore(fecha) && fechaInicial.isBefore(fecha) || fechaInicial.isEqual(fecha)) 
+				{
+					stack.push(item);
+				}
+			}
+		}
+		return stack;
 	}
 	
 	/**
