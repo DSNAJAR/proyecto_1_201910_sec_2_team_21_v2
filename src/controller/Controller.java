@@ -512,8 +512,8 @@ public class Controller {
 				}
 			}
 		}
-		resultado[0] = accidente/a;
-		resultado[1] = noAccidente/nA;
+		resultado[1] = accidente/a;
+		resultado[0] = noAccidente/nA;
 		
 		return resultado;
 	}
@@ -544,6 +544,8 @@ public class Controller {
 			}
 		}
 		return stack;
+		
+		//incompleto
 	}
 	
 	/**
@@ -598,6 +600,12 @@ public class Controller {
 	 */
 	public int countMovingViolationsInHourRange(int hora1, int hora2) {
 		// TODO Auto-generated method stub
+		Nodo<VOMovingViolations> x = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations item = null;
+		
+		while(x.siguiente!=null) {
+			item = x.item;
+		}
 		return 0;
 	}
 	
