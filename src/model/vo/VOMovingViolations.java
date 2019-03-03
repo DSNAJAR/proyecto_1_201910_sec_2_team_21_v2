@@ -1,5 +1,9 @@
 package model.vo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Representation of a Trip object
  */
@@ -17,27 +21,67 @@ public class VOMovingViolations implements Comparable<VOMovingViolations>{
 	/**
 	 * Dirección en formato de texto
 	 */
-	private String location;
+	private String rowLocation;
+	
+	/**
+	 * ID de la dirección
+	 */
+	private int addresId;
+	
+	/**
+	 * ID del segmento de la calle
+	 */
+	private int streetSegId;
+	
+	/**
+	 * Coordenada X donde ocurrió (No corresponde a una longitud geográfica)
+	 */
+	private double xCoord;
+	
+	/**
+	 * Coordenada y donde ocurrió (No corresponde a una longitud geográfica)
+	 */
+	private double yCoord;
+	
+	/**
+	 * Tipo de infracción
+	 */
+	private String ticketType;
 	
 	/**
 	 * Cantidad a pagar por la infracción en USD
 	 */
-	private int sumaFINEAMT;
+	private int fineAMT;
 	
 	/**
-	 * Fecha cuando se puso la infracción
-	 */
-	private String ticketIssueDate;
-	
-	/**
-	 * Cuanto dinero pagó el que recibio la infracción en USD
+	 * Cuanto dinero pagó el que recibió la multa
 	 */
 	private int totalPaid;
 	
 	/**
-	 * Si hubo acciente o no
+	 * Dinero extra que debe pagar el conductor
+	 */
+	private int penal1;
+	
+	/**
+	 * Dinero extra que debe pagar el conductor
+	 */
+	private int penal2;
+	
+	/**
+	 * Indicador de accidente
 	 */
 	private String accidentIndicator;
+	
+	/**
+	 * Numero de la agencia
+	 */
+	private int agencyId;
+	
+	/**
+	 * Fecha cuando se puso la infracción
+	 */
+	private Date ticketIssueDate;
 	
 	/**
 	 * Código de la infracción
@@ -47,7 +91,14 @@ public class VOMovingViolations implements Comparable<VOMovingViolations>{
 	/**
 	 * Descripción textual de la infracción
 	 */
-	private String violationDescription;
+	private String violationDesc;
+	
+	private int rowId;
+	
+	/**
+	 * Es el formato que se usara para las fechas
+	 */
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
 	//--------------------------------------------------------------------------------------------------
 	// Constructor
@@ -64,86 +115,187 @@ public class VOMovingViolations implements Comparable<VOMovingViolations>{
 	 * @param pViolationCode Codigo de la infracción.
 	 * @param pViolationDescription Descripción textual de la infracción.
 	 */
-	public VOMovingViolations(int pObjectId, String pLocation, int pSumaFINEAMT, String pTicketIssueDate, int pTotalPaid, String pAccidentIndicator, String pViolationCode, String pViolationDescription){
+	public VOMovingViolations( int pObjectId, String pLocation, int pAddrresId, int pStreetSegId,int pXCoord, int pYCoord, String pTicketType, int pSumaFINEAMT, int pTotalPaid, int pPenal1, int pPenal2, String pAccidentIndicator, String pTicketIssueDate, String pViolationCode, String pViolationDescription, int pRowId) throws ParseException
+	{
+		// TODO Implementar
 		objectId = pObjectId;
-		location = pLocation;
-		sumaFINEAMT = pSumaFINEAMT;
-		ticketIssueDate = pTicketIssueDate;
+		rowLocation = pLocation;
+		addresId = pAddrresId;
+		streetSegId = pStreetSegId;
+		xCoord = pXCoord;
+		yCoord = pYCoord;
+		ticketType = pTicketType;
+		fineAMT = pSumaFINEAMT;
 		totalPaid = pTotalPaid;
-		accidentIndicator = pAccidentIndicator;
+		penal1 = pPenal1;
+		penal2 = pPenal2;
+		accidentIndicator =  pAccidentIndicator;
+		agencyId = 0;
+		ticketIssueDate = format.parse(pTicketIssueDate);
 		violationCode = pViolationCode;
-		violationDescription = pViolationDescription;
-	}
+		violationDesc = pViolationDescription;
+		rowId = pRowId;
+	}	
 	
 	//-----------------------------------------------------------------------------------------
 	// Métodos
 	//-----------------------------------------------------------------------------------------
 	
 	/**
-	 * Retorna el objectId
-	 * @return id - Identificador único de la infracción
+	 * @return id - Identificador unico de la infraccion
 	 */
-	public int objectId() {
+	public int getObjectId() {
+		// TODO Auto-generated method stub
 		return objectId;
 	}	
 	
 	
 	/**
-	 * Retorna la dirección
-	 * @return location - Dirección en formato de texto.
+	 * @return location - Direccion en formato de texto.
 	 */
 	public String getLocation() {
-		return location;
+		// TODO Auto-generated method stub
+		return rowLocation;
 	}
 	
 	/**
-	 * Retorna la cantidad a pagar por la  infraccióm
-	 * @return sumaFINEAMT - Cantidad a pagar por la infracción
+	 * @return address - ID de la dirección
 	 */
-	public int getSumaFINEAMT() {
-		return sumaFINEAMT;
-	}
-
-	/**
-	 * Retorna la fecha en la que se puso la infracción
-	 * @return date - Fecha cuando se puso la infracción .
-	 */
-	public String getTicketIssueDate() {
-		return ticketIssueDate;
+	public int getAdressId(){
+		return addresId;
 	}
 	
 	/**
-	 * @return totalPaid - Cuanto dinero efectivamente pagÃ³ el que recibiÃ³ la infracciÃ³n en USD.
+	 * @return street seg Id - ID del segmento de la calle
+	 */
+	public int getStreetSegId(){
+		return streetSegId;
+	}
+	
+	/**
+	 * @return coordX - Coordenada x donde ocurrió
+	 */
+	public double getXCoord(){
+		return xCoord;
+	}
+	
+	/**
+	 * @return coordY - Coordenada y donde ocurrió
+	 */
+	public double getYCoord(){
+		return yCoord;
+	}
+	
+	/**
+	 *@return ticket type - Tipo de infracción 
+	 */
+	public String getTicketType(){
+		return ticketType;
+	}
+	
+	/**
+	 * @return fine AMT - Cantidad a pagar por la infracción en USD
+	 */
+	public int getFineAMT(){
+		return fineAMT;
+	}
+	
+	/**
+	 * @return totalPaid - Cuanto dinero efectivamente paga el que recibio la infraccion en USD.
 	 */
 	public int getTotalPaid() {
+		// TODO Auto-generated method stub
 		return totalPaid;
+	}
+	/**
+	 * @return penal 1 - Dinero extra que debe pagar el conductor
+	 */
+	public int getPenalty1(){
+		return penal1;
+	}
+	
+	/**
+	 * @return penal 2 - Dinero extra que debe pagar el conductor
+	 */
+	public int getPenalty2(){
+		return penal2;
 	}
 	
 	/**
 	 * @return accidentIndicator - Si hubo un accidente o no.
 	 */
 	public String  getAccidentIndicator() {
+		// TODO Auto-generated method stub
 		return accidentIndicator;
 	}
+	
 	/**
-	 * Retorna el código de la infracción
-	 * @return violationCode - Código de la infracción
+	 * @return agency ID - ID de la agencia
 	 */
-	public String  getViolationCode() {
+	public int getAgencyId(){
+		return agencyId;
+	}
+	
+	/**
+	 * @return date - Fecha cuando se puso la infraccion .
+	 */
+	public String getTicketIssueDate() {
+		// TODO Auto-generated method stub
+		return ticketIssueDate.toString();
+	}
+	
+	/**
+	 * @return violation code - Código de la infracción
+	 */
+	public String getViolationCode(){
 		return violationCode;
 	}
 		
 	/**
-	 * Retorna la descripción textual de la infracción
-	 * @return description - Descripción textual de la infracción.
+	 * @return description - Descripcion textual de la infraccion.
 	 */
 	public String  getViolationDescription() {
-		return violationDescription;
+		// TODO Auto-generated method stub
+		return violationDesc;
+	}
+	
+	/**
+	 * @return rowID
+	 */
+	public int getRowId(){
+		return rowId;
 	}
 
 	@Override
-	public int compareTo(VOMovingViolations arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * Compara las infracciones por el ticketIssueDate. Si el ticketIssueDate de las infracciones comparadas es 
+	 * igual, la comparación se resuelve por su objectID.
+	 * @return 1 si la infracción es mayor que la recibida
+	 * @return 0 si las infracciones son iguales
+	 * @return -1 si la infracción es menor que la recibida 
+	 */
+	public int compareTo(VOMovingViolations o) {
+		// TODO implementar la comparacion "natural" de la clase
+		int c = 0;
+		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd"+" T "+"kk:mm:ss");
+		Date n = null;
+		try{
+			n = form.parse(o.getTicketIssueDate());
+		} catch (java.text.ParseException ex){
+			ex.printStackTrace();
+		}
+		if(ticketIssueDate.after(n)) c = 1;
+		else if(ticketIssueDate.before(n)) c = -1;
+		else if(ticketIssueDate.equals(n)){
+			if (objectId < o.getObjectId()) c = -1;
+			else if(objectId > o.getObjectId()) c= 1;
+			else return c;};
+		return c;
+	}
+	
+	public String toString()
+	{
+		// TODO Convertir objeto en String (representacion que se muestra en la consola)
+		return "-";
 	}
 }

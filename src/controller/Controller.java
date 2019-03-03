@@ -99,7 +99,7 @@ public class Controller {
 	/**
 	 * Es el formato que se usara para las fechas
 	 */
-	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	//private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
 	/**
 	 * Es la referencia al view
@@ -417,8 +417,8 @@ public class Controller {
 				String violationDescription = mv[15].trim();
 				String rowId = mv[16].trim();
 				
-				movingViolationsQueue.enqueue(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
-				movingViolationsStack.push(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(fineAMT), ticketIssueDate, Integer.parseInt(totalPaid), accidentIndicator, violationCode, violationDescription));
+				movingViolationsQueue.enqueue(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(addressId), Integer.parseInt(streetsegId), Integer.parseInt(xCoord), Integer.parseInt(yCoord), ticketType, Integer.parseInt(fineAMT), Integer.parseInt(totalPaid), Integer.parseInt(penalty1), Integer.parseInt(penalty2), accidentIndicator, ticketIssueDate, violationCode, violationDescription, Integer.parseInt(rowId)));
+				movingViolationsStack.push(new VOMovingViolations(Integer.parseInt(objectId), location, Integer.parseInt(addressId), Integer.parseInt(streetsegId), Integer.parseInt(xCoord), Integer.parseInt(yCoord), ticketType, Integer.parseInt(fineAMT), Integer.parseInt(totalPaid), Integer.parseInt(penalty1), Integer.parseInt(penalty2), accidentIndicator, ticketIssueDate, violationCode, violationDescription, Integer.parseInt(rowId)));
 			}
 			if(cargaCompleta == true)
 			{
@@ -437,7 +437,31 @@ public class Controller {
 	 * @return True||false
 	 */
 	public boolean verifyObjectIDIsUnique() {
-		return false;
+		Nodo<VOMovingViolations> x = movingViolationsQueue.getNodoFirst();
+		Nodo<VOMovingViolations> aux = null;
+		VOMovingViolations item = x.item;
+		VOMovingViolations auxItem = null;
+		int id = 0;
+		int auxId = 0;
+		boolean hay = false;
+		
+		while(x.siguiente!=null) {
+			aux = x.siguiente;
+			id = item.getObjectId();
+			boolean ya = false;
+			while(aux.siguiente!=null || !ya) {
+				auxItem = aux.item;
+				auxId = auxItem.getObjectId();
+				if(id==auxId) {
+					ya = true;
+					hay = true;
+				}
+			}
+			if(!hay) {
+				System.out.println(id);
+			}
+		}
+		return hay;
 	}
 	
 	/**
@@ -448,7 +472,17 @@ public class Controller {
 	 */
 	public IQueue<VOMovingViolations> getMovingViolationsInRange(LocalDateTime fechaInicial, LocalDateTime fechaFinal) {
 		// TODO Auto-generated method stub
-		return null;
+		IQueue<VOMovingViolations> queue = new Queue<VOMovingViolations>();
+		Iterator<VOMovingViolations> it = movingViolationsQueue.iterator();
+		VOMovingViolations x = null;
+		
+		while(it.hasNext()) {
+			x = it.next();
+			if(fechaInicial.isBefore(convertirFecha_Hora_LDT(x.getTicketIssueDate())) && fechaFinal.isAfter(convertirFecha_Hora_LDT(x.getTicketIssueDate())) || fechaInicial.isEqual(convertirFecha_Hora_LDT(x.getTicketIssueDate())) || fechaFinal.isEqual(convertirFecha_Hora_LDT(x.getTicketIssueDate()))) {
+				queue.enqueue(x);
+			}
+		}
+		return queue;
 	}
 	
 	/**
@@ -457,7 +491,31 @@ public class Controller {
 	 * @return FINEAMTs promedio.
 	 */
 	public double[] avgFineAmountByViolationCode(String violationCode) {
-		return new double [] {0.0 , 0.0};
+		double[] resultado = new double[2];
+		Iterator<VOMovingViolations> it = movingViolationsQueue.iterator();
+		VOMovingViolations x = null;
+		double accidente = 0.0;
+		int a = 0;
+		double noAccidente = 0.0;
+		int nA = 0;
+		
+		while(it.hasNext()) {
+			x = it.next();
+			if(x.getViolationCode().equals(violationCode)) {
+				if(x.getAccidentIndicator().equals("Yes")) {
+					a++;
+					accidente += x.getFineAMT();
+				}
+				if(x.getAccidentIndicator().equals("No")) {
+					nA++;
+					noAccidente += x.getFineAMT();
+				}
+			}
+		}
+		resultado[0] = accidente/a;
+		resultado[1] = noAccidente/nA;
+		
+		return resultado;
 	}
 	
 	/**

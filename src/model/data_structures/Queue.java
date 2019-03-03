@@ -104,5 +104,8 @@ public class Queue<T extends Comparable<T>> implements IQueue<T> {
 		
 		return item;
 	}
-
+	
+	public Nodo<T> getNodoFirst() { 
+		return first;
+	}
 }
