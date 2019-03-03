@@ -556,8 +556,29 @@ public class Controller {
 	 */
 	public IQueue<VOViolationCode> violationCodesByFineAmt(double limiteMin, double limiteMax) {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		IQueue<VOViolationCode> cumplen = new Queue<VOViolationCode>();
+		Nodo<VOMovingViolations> x = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations n;
+		while(x.siguiente!=null) {
+			n = x.item;
+			Nodo<VOMovingViolations> sig = x.siguiente;
+			VOMovingViolations m = sig.item;
+			VOViolationCode it = new VOViolationCode(n.getViolationCode(), n.getFineAMT());
+			VOViolationCode aComp = new VOViolationCode(m.getViolationCode(), m.getFineAMT());
+			if(m.compareTo(n)>0){
+				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm() <= limiteMax){
+					
+				}
+			}
+			else if(m.compareTo(n)<0){
+				
+			}
+			else if(m.compareTo(n)==0){
+				
+			}
+			x=sig;
+		}
+		return cumplen;	}
 	
 	/**
 	 * Busca las infracciones por el total pagado, dentro de un rango de pago.
@@ -579,8 +600,19 @@ public class Controller {
 	 */
 	public IQueue<VOMovingViolations> getMovingViolationsByHour(int horaInicial, int horaFinal) {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		IQueue<VOMovingViolations> inRange = new Queue<VOMovingViolations>();
+		Nodo<VOMovingViolations> x = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations item;
+		
+		while(x.siguiente!=null) {
+			item = x.item;
+			String sFecha = item.getTicketIssueDate();
+			String[] string = sFecha.split("T");
+			String[] str = string[1].split(":"); 
+			int hora = Integer.parseInt(str[0]);
+			if(hora >= horaInicial && hora <= horaFinal){inRange.enqueue(item);}		}
+		return inRange;
+	}  
 	
 	/**
 	 * Busca una infracción por su codigo y retorna su FINEAMT promedio y su desviación estandar de este.
