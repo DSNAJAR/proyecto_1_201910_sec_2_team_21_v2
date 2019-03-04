@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Scanner;
+
+import com.sun.xml.internal.ws.util.StringUtils;
 
 import jdk.nashorn.internal.runtime.arrays.IteratorAction;
 import model.data_structures.IQueue;
@@ -271,7 +274,7 @@ public class Controller {
 					break;
 				
 				case 10:
-					view.printMovingViolationsByHourReq10();
+					view.printMovingViolationsByHourReq10(getGraficaPorcentaje());
 					break;
 					
 				case 11:
@@ -286,7 +289,7 @@ public class Controller {
 					break;
 				
 				case 12:	
-					view.printTotalDebtbyMonthReq12();
+					view.printTotalDebtbyMonthReq12(null);
 					
 					break;
 					
@@ -449,7 +452,7 @@ public class Controller {
 			aux = x.siguiente;
 			id = item.getObjectId();
 			boolean ya = false;
-			while(aux.siguiente!=null || !ya) {
+			while(aux.siguiente != null || !ya) {
 				auxItem = aux.item;
 				auxId = auxItem.getObjectId();
 				if(id==auxId) {
@@ -460,6 +463,7 @@ public class Controller {
 			if(!hay) {
 				System.out.println(id);
 			}
+			x = x.siguiente;
 		}
 		return hay;
 	}
@@ -542,6 +546,7 @@ public class Controller {
 					stack.push(item);
 				}
 			}
+			x = x.siguiente;
 		}
 		return stack;
 		
@@ -563,7 +568,6 @@ public class Controller {
 			n = x.item;
 			Nodo<VOMovingViolations> sig = x.siguiente;
 			VOMovingViolations m = sig.item;
-			VOViolationCode it = new VOViolationCode(n.getViolationCode(), n.getFineAMT());
 			VOViolationCode aComp = new VOViolationCode(m.getViolationCode(), m.getFineAMT());
 			if(m.compareTo(n)>0){
 				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm() <= limiteMax){
@@ -576,7 +580,7 @@ public class Controller {
 			else if(m.compareTo(n)==0){
 				
 			}
-			x=sig;
+			x = sig;
 		}
 		return cumplen;	}
 	
@@ -610,7 +614,11 @@ public class Controller {
 			String[] string = sFecha.split("T");
 			String[] str = string[1].split(":"); 
 			int hora = Integer.parseInt(str[0]);
-			if(hora >= horaInicial && hora <= horaFinal){inRange.enqueue(item);}		}
+			if(hora >= horaInicial && hora <= horaFinal) {
+				inRange.enqueue(item);
+			}
+			x = x.siguiente;
+		}
 		return inRange;
 	}  
 	
@@ -634,11 +642,19 @@ public class Controller {
 		// TODO Auto-generated method stub
 		Nodo<VOMovingViolations> x = movingViolationsQueue.getNodoFirst();
 		VOMovingViolations item = null;
+		int nInfracciones = 0;
 		
 		while(x.siguiente!=null) {
 			item = x.item;
+			String date[] = item.getTicketIssueDate().split("T");
+			String hour[] = date[1].split(":");
+			int hora = Integer.parseInt(hour[0]);
+			if(hora >= hora1 && hora <= hora2) {
+				nInfracciones++;
+			}
+			x = x.siguiente;
 		}
-		return 0;
+		return nInfracciones;
 	}
 	
 	/**
@@ -646,8 +662,41 @@ public class Controller {
 	 * dentro del rango de horas del dia. El rango se define por valores enteros en [0, 24]
 	 * @param args
 	 */
-	public void getGraficaPorcentaje (String[] args) {
-		
+	public String[] getGraficaPorcentaje () {
+		String[] prints = new String[24];
+		Nodo<VOMovingViolations> nodo = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations item = null;
+		int i = 0;
+		int nInfracciones = 0;
+		double porcentaje = 0.0;
+		while(i < 24) {
+			item = nodo.item;
+			String[] date = item.getTicketIssueDate().split("T");
+			String[] horas = date[1].split(":");
+			int hora = Integer.parseInt(horas[0]);
+			
+			if(hora == i) {
+				nInfracciones++;
+				if(item.getAccidentIndicator().equals("Yes")) {
+					porcentaje++;
+				}
+			}
+			if(nodo.siguiente==null) {
+				porcentaje = porcentaje * 100 / nInfracciones;
+				int escribir = 0;
+				String x = "";
+				while(escribir != porcentaje) {
+					porcentaje = Math.round(porcentaje / 5);
+					x += "X";
+					prints[i] = x;
+					escribir++;
+					nodo = movingViolationsQueue.getNodoFirst();
+				}
+				i++;
+			}
+			nodo = nodo.siguiente;
+		}
+		return prints;
 	}
 	
 	/**
@@ -658,14 +707,83 @@ public class Controller {
 	 */
 	public double totalDebt(LocalDate fechaInicial, LocalDate fechaFinal) {
 		// TODO Auto-generated method stub
-		return 0;
+		double deudaTotal = 0.0;
+		Nodo<VOMovingViolations> nodo = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations item = null;
+		
+		while(nodo.siguiente!=null) {
+			item = nodo.item;
+			String[] date = item.getTicketIssueDate().split("T");
+			String fecha = date[0];
+			if(convertirFecha(fecha).isAfter(fechaInicial) && convertirFecha(fecha).isBefore(fechaFinal) || convertirFecha(fecha).equals(fechaInicial) || convertirFecha(fecha).isEqual(fechaFinal)) {
+				deudaTotal += item.getTotalPaid() + item.getFineAMT() + item.getPenalty1() + item.getPenalty2();
+			}
+			nodo = nodo.siguiente;
+		}
+		return deudaTotal;
 	}
 	
 	/**
 	 * Genera una grafica ASCII con la deuda acumulada por infracciones en el cuatrimestre
 	 */
-	public void geGraficaASCIIdeudaAcumuladaTotal () {
+	public String[] geGraficaASCIIdeudaAcumuladaTotal () {
+		String[] prints = new String[4];
 		
+		int mes1 = 0;
+		int mes2 = 0;
+		int mes3 = 0;
+		int mes4 = 0;
+		
+		if(cuatrimestre == 1) {
+			mes1 = 1;
+			mes2 = 2;
+			mes3 = 3;
+			mes4 = 4;
+		}
+		if(cuatrimestre == 2) {
+			mes1 = 5;
+			mes2 = 6;
+			mes3 = 7;
+			mes4 = 8;
+		}
+		if(cuatrimestre == 3) {
+			mes1 = 9;
+			mes2 = 10;
+			mes3 = 11;
+			mes4 = 12;
+		}
+		
+		double deuda1 = totalDebt(convertirFecha("2018-" + mes1 + "-1"), convertirFecha("2018-" + mes1 + "-31"));
+		double deuda2 = totalDebt(convertirFecha("2018-" + mes2 + "-1"), convertirFecha("2018-" + mes2 + "-31"));
+		double deuda3 = totalDebt(convertirFecha("2018-" + mes3 + "-1"), convertirFecha("2018-" + mes3 + "-31"));
+		double deuda4 = totalDebt(convertirFecha("2018-" + mes4 + "-1"), convertirFecha("2018-" + mes4 + "-31"));
+		
+		int i = 0;
+		
+		while(i != deuda1 / 1500) {
+			i++;
+			prints[0] += "X";
+		}
+		i = 0;
+		
+		while(i != deuda2 / 1500) {
+			i++;
+			prints[1] += "X";
+		}
+		i = 0;
+		
+		while(i != deuda3 / 1500) {
+			i++;
+			prints[2] += "X";
+		}
+		i = 0;
+		
+		while(i != deuda4 / 1500) {
+			i++;
+			prints[3] += "X";
+		}
+		
+		return prints;
 	}
 	
 	/**
@@ -675,7 +793,7 @@ public class Controller {
 	 */
 	private static LocalDate convertirFecha(String fecha)
 	{
-		return LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		return LocalDate.parse(fecha, DateTimeFormatter.ofPattern("yyy-MM-dd"));
 	}
 
 	
@@ -686,6 +804,6 @@ public class Controller {
 	 */
 	private static LocalDateTime convertirFecha_Hora_LDT(String fechaHora)
 	{
-		return LocalDateTime.parse(fechaHora, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm:ss"));
+		return LocalDateTime.parse(fechaHora, DateTimeFormatter.ofPattern("yyyy-MM-dd"+" T "+"kk:mm:ss"));
 	}
 }
