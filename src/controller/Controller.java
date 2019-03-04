@@ -568,17 +568,22 @@ public class Controller {
 			n = x.item;
 			Nodo<VOMovingViolations> sig = x.siguiente;
 			VOMovingViolations m = sig.item;
+<<<<<<< HEAD
+=======
+			VOViolationCode it = new VOViolationCode(n.getViolationCode(), n.getFineAMT());	
+>>>>>>> b7f22be5f215884e714f5335a098c844d1c967b9
 			VOViolationCode aComp = new VOViolationCode(m.getViolationCode(), m.getFineAMT());
 			if(m.compareTo(n)>0){
-				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm() <= limiteMax){
-					
-				}
+				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm() <= limiteMax){ cumplen.enqueue(aComp);}
+				if(it.getFINEAMTProm() >= limiteMin && it.getFINEAMTProm()<= limiteMax){ cumplen.enqueue(it);}
 			}
 			else if(m.compareTo(n)<0){
-				
+				if(it.getFINEAMTProm() >= limiteMin && it.getFINEAMTProm() <= limiteMax){ cumplen.enqueue(it);}
+				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm()<= limiteMax){ cumplen.enqueue(aComp);}
 			}
 			else if(m.compareTo(n)==0){
-				
+				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm() <= limiteMax){ cumplen.enqueue(aComp);}
+				if(it.getFINEAMTProm() >= limiteMin && it.getFINEAMTProm()<= limiteMax){ cumplen.enqueue(it);}
 			}
 			x = sig;
 		}
@@ -629,6 +634,7 @@ public class Controller {
 	 */
 	public double[] avgAndStdDevFineAmtOfMovingViolation(String violationCode) {
 		// TODO Auto-generated method stub
+		
 		return new double [] {0.0 , 0.0};
 	}
 	
