@@ -568,10 +568,7 @@ public class Controller {
 			n = x.item;
 			Nodo<VOMovingViolations> sig = x.siguiente;
 			VOMovingViolations m = sig.item;
-<<<<<<< HEAD
-=======
-			VOViolationCode it = new VOViolationCode(n.getViolationCode(), n.getFineAMT());	
->>>>>>> b7f22be5f215884e714f5335a098c844d1c967b9
+			VOViolationCode it = new VOViolationCode(n.getViolationCode(), n.getFineAMT());
 			VOViolationCode aComp = new VOViolationCode(m.getViolationCode(), m.getFineAMT());
 			if(m.compareTo(n)>0){
 				if(aComp.getFINEAMTProm() >= limiteMin && aComp.getFINEAMTProm() <= limiteMax){ cumplen.enqueue(aComp);}
@@ -766,25 +763,25 @@ public class Controller {
 		
 		int i = 0;
 		
-		while(i != deuda1 / 1500) {
+		while(i != Math.round(deuda1 / 1500)) {
 			i++;
 			prints[0] += "X";
 		}
 		i = 0;
 		
-		while(i != deuda2 / 1500) {
+		while(i != Math.round(deuda2 / 1500)) {
 			i++;
 			prints[1] += "X";
 		}
 		i = 0;
 		
-		while(i != deuda3 / 1500) {
+		while(i != Math.round(deuda3 / 1500)) {
 			i++;
 			prints[2] += "X";
 		}
 		i = 0;
 		
-		while(i != deuda4 / 1500) {
+		while(i != Math.round(deuda4 / 1500)) {
 			i++;
 			prints[3] += "X";
 		}
