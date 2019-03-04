@@ -590,7 +590,29 @@ public class Controller {
 	 */
 	public IStack<VOMovingViolations> getMovingViolationsByTotalPaid(double limiteMin, double limiteMax, boolean ascendente) {
 		// TODO Auto-generated method stub
-		return null;
+		IStack<VOMovingViolations> encontradas = new Stack<VOMovingViolations>();
+		Nodo<VOMovingViolations> n = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations es;
+		while(n.siguiente != null){
+			es = n.item;
+			Nodo<VOMovingViolations> o = n.siguiente;
+			VOMovingViolations sig = o.item;
+			int tot1 = es.getTotalPaid();
+			int tot2 = sig.getTotalPaid();
+			if(ascendente){
+				if(es.compareTo(sig)<0){
+					if(tot1>= limiteMin && tot1 <= limiteMax){ encontradas.push(es);}
+					if(tot2 >= limiteMin && tot2 <= limiteMax){ encontradas.push(sig);}}
+				else if(sig.compareTo(es)<0){
+					if(tot2 >= limiteMin && tot2 <= limiteMax){ encontradas.push(sig);}
+					if(tot1 >= limiteMin && tot1 <= limiteMax){ encontradas.push(es);}}
+			} else {
+				if(tot1 >= limiteMin && tot1 <= limiteMax){ encontradas.push(es);}
+				if(tot2 >= limiteMin && tot2 <= limiteMax){ encontradas.push(sig);}
+			}
+			n= o;
+		}
+		return encontradas;
 	}
 	
 	/**
@@ -622,8 +644,21 @@ public class Controller {
 	 */
 	public double[] avgAndStdDevFineAmtOfMovingViolation(String violationCode) {
 		// TODO Auto-generated method stub
+		double prom = 0;
+		double desviacion = 0;
+		int cantidad = movingViolationsQueue.size();
+		Nodo<VOMovingViolations> i = movingViolationsQueue.getNodoFirst();
+		VOMovingViolations th;
 		
-		return new double [] {0.0 , 0.0};
+		while(i.siguiente != null)
+		{
+			th = i.item;
+			if(th.getViolationCode().equals(violationCode)){ prom += th.getFineAMT();}
+			i = i.siguiente;
+		}
+		
+		prom /= cantidad;
+		return new double [] {prom , desviacion};
 	}
 	
 	/**
